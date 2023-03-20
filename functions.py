@@ -209,3 +209,56 @@ def g_node(c,r):
             flag = False
         
     return goal_node
+def take_input():
+    """
+    Takes the required parameter data from user.
+
+    Returns
+    -------
+    clearance : int
+        Clearance.
+    radius : int
+        Robot radius.
+    StepSize : int
+        Stride.
+    angle : int
+        Angle step-size.
+
+    """
+    
+    clearance, radius = [int(item) for item in input("\n Please enter the clearance and robot radius (comma seperated values): ").split(',')]
+    flag = False
+    while not flag:     
+        StepSize = int(input("\n Please enter the step size: "))
+        if (1 <= StepSize <= 10):
+            flag = True
+        else:
+            print("\n Enter step size in range [1,10].")
+    angle = int(input("\n Please enter angle between movements: "))
+    
+    return clearance, radius, StepSize, angle
+
+
+def cal_dis(current, goal):
+    """
+    Calculates Euclidian diatance between two nodes.
+
+    Parameters
+    ----------
+    current : Array
+        Source node.
+    goal : Array
+        Destination node.
+
+    Returns
+    -------
+    cost : double
+        Distance between the two nodes.
+
+    """
+    
+    cost=0.0
+    if current is not None:
+        cost=np.sqrt((current[0]-goal[0])**2 + (current[1]-goal[1])**2)
+    
+    return cost
