@@ -262,3 +262,170 @@ def cal_dis(current, goal):
         cost=np.sqrt((current[0]-goal[0])**2 + (current[1]-goal[1])**2)
     
     return cost
+def CC60(node, L, angle):
+    """
+    Performs action corresponding to angle of 60 degrees. 
+
+    Parameters
+    ----------
+    node : Node
+        Object of class Node.
+    L : int
+        Step-size(stride).
+    angle : int
+        Angle step-size.
+
+    Returns
+    -------
+    list
+        List containing new node, cost.
+
+    """
+    
+    x = node.x
+    y = node.y
+    cur_angle = node.angle
+    new_angle = (cur_angle + 2 * angle) % 360
+    
+    new_x = int(np.round(x + L * np.cos(np.radians(new_angle))))
+    new_y = int(np.round(y + L * np.sin(np.radians(new_angle))))
+    
+    move = (new_x, new_y, new_angle)
+    cost = L 
+    
+    return [move,cost]
+
+
+def CC30(node, L, angle):
+    """
+    Performs action corresponding to angle of 30 degrees. 
+
+    Parameters
+    ----------
+    node : Node
+        Object of class Node.
+    L : int
+        Step-size(stride).
+    angle : int
+        Angle step-size.
+
+    Returns
+    -------
+    list
+        List containing new node, cost.
+
+    """
+    
+    x = node.x
+    y = node.y
+    cur_angle = node.angle
+    new_angle = (cur_angle + angle) % 360
+    
+    new_x = int(np.round(x + L * np.cos(np.radians(new_angle))))
+    new_y = int(np.round(y + L * np.sin(np.radians(new_angle))))
+    
+    move = (new_x, new_y, new_angle)
+    cost = L 
+    
+    return [move,cost]    
+
+
+def straight(node, L, angle):
+    """
+    Performs action corresponding to angle of 0 degrees. 
+
+    Parameters
+    ----------
+    node : Node
+        Object of class Node.
+    L : int
+        Step-size(stride).
+    angle : int
+        Angle step-size.
+
+    Returns
+    -------
+    list
+        List containing new node, cost.
+
+    """
+    
+    x = node.x
+    y = node.y
+    cur_angle = node.angle
+    new_angle = (cur_angle) % 360
+    
+    new_x = int(np.round(x + L * np.cos(np.radians(new_angle))))
+    new_y = int(np.round(y + L * np.sin(np.radians(new_angle))))
+    
+    move = (new_x, new_y, new_angle)
+    cost = L 
+    
+    return [move,cost]   
+ 
+    
+def C30(node, L, angle):
+    """
+    Performs action corresponding to angle of -30 degrees. 
+
+    Parameters
+    ----------
+    node : Node
+        Object of class Node.
+    L : int
+        Step-size(stride).
+    angle : int
+        Angle step-size.
+
+    Returns
+    -------
+    list
+        List containing new node, cost.
+
+    """
+    
+    x = node.x
+    y = node.y
+    cur_angle = node.angle
+    new_angle = (cur_angle - angle) % 360
+    
+    new_x = int(np.round(x + L * np.cos(np.radians(new_angle))))
+    new_y = int(np.round(y + L * np.sin(np.radians(new_angle))))
+    
+    move = (new_x, new_y, new_angle)
+    cost = L 
+    
+    return [move,cost]  
+ 
+    
+def C60(node, L, angle):
+    """
+    Performs action corresponding to angle of -60 degrees. 
+
+    Parameters
+    ----------
+    node : Node
+        Object of class Node.
+    L : int
+        Step-size(stride).
+    angle : int
+        Angle step-size.
+
+    Returns
+    -------
+    list
+        List containing new node, cost.
+    """
+    
+    x = node.x
+    y = node.y
+    cur_angle = node.angle
+    new_angle = (cur_angle - 2 * angle) % 360
+    
+    new_x = int(np.round(x + L * np.cos(np.radians(new_angle))))
+    new_y = int(np.round(y + L * np.sin(np.radians(new_angle))))
+    
+    move = (new_x, new_y, new_angle)
+    cost = L 
+    
+    return [move,cost]   
