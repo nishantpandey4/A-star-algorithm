@@ -429,3 +429,146 @@ def C60(node, L, angle):
     cost = L 
     
     return [move,cost]   
+def goal_found(current, goal, radius):
+    """
+    Checks if a node is in proximity of goal node.
+
+    Parameters
+    ----------
+    current : Array
+        Given node.
+    goal : Array
+        Goal node.
+    radius : int
+        Robot radius
+
+    Returns
+    -------
+    bool
+        Whether the node is close enough to be considered for status to be 'goal reached'.
+
+    """
+    
+    threshold = 1.5 * radius
+    distance = cal_dis(current, goal)
+    
+    if (distance < threshold):
+        return True
+    else:
+        return False
+    
+def explore(node, c, r, L, angle):
+    """
+    Explores the neighbors of the current node and performs move action.
+
+    Parameters
+    ----------
+    node : Node
+        Current node for which neighbors need to be explored.
+    c : int
+        Clearance.
+    r : int
+        Robot radius.
+    L : int
+        Step-size(stride).
+    angle : int
+        Angle step-size.
+
+    Returns
+    -------
+    valid_paths : list
+        Action performed node, cost of movement.
+
+    """
+    
+
+    moves = [CC60(node, L, angle),
+             CC30(node, L, angle),
+             straight(node, L, angle),
+             C30(node, L, angle),
+             C60(node, L, angle)]
+    
+    valid_paths = []
+    for move in moves:
+        if (move[0][0] > 0 and move[0][0] < 400 and move[0][1] > 0 and move[0][1] < 250):
+            if not isObstacle(move[0], c, r):
+                valid_paths.append([move[0],move[1]])
+
+    return valid_paths
+
+
+def algorithm(start_node, goal_node, map, c, r, L, angle):
+    """
+    Performs A* search.
+
+    Parameters
+    ----------
+    start_node : Array
+        Initial node.
+    goal_node : Array
+        Goal node.
+    map : 2D Array
+        Constructed map.
+    c : int
+        Clearance.
+    r : int
+        Robot radius.
+    L : int
+        Step-size(stride).
+    angle : int
+        Angle step-size.
+    
+
+    Returns
+    -------
+    node_objects : dict
+        Dictionary holding information of nodes, instances of class Node.
+
+    """
+
+    print("\n Performing A* search...\n")
+
+    q = PriorityQueue()                                                              # Priority queue for open nodes
+    visited = set([])                                                                # Set conataining visited nodes
+    node_objects = {}                                                                # dictionary of nodes
+    distance = {}                                                                    # distance 
+    
+    # Assign costs for all nodes to a large value
+    for i in range(0, map.shape[1]):
+        for j in range(0, map.shape[0]):
+            for k in range(0, 360, angle):
+                distance[str(([i,j],k))] = 99999999
+    
+    distance[str(start_node)] = cal_dis(tuple(start_node[0:2]), tuple(goal_node[0:2]))                                                    
+    visited.add(str(start_node))                                                     # Add start node to visited list
+    node = Node.Node(start_node,0,None)                                              # Create instance of Node
+    node_objects[str(node.pos)] = node                                               # Assigning the node value in dictionary
+    q.put((node.cost, node.pos))                                                     # Inserting the start node in priority queue
+
+    
+    while not q.empty():                                                                 # Iterate until the queue is empty
+        node_temp = q.get()                                                              # Pop node from queue
+        node = node_objects[str(node_temp[1])]  
+            
+        # Check if the node is the goal node
+        if goal_found(tuple(node_temp[1][0:2]), tuple(goal_node[0:2]), r):    
+            print(" Goal Reached!!!\n")
+            node_objects[str(goal_node)] = Node.Node(goal_node,node_temp[0], node)
+            break
+        
+        for next_node, cost in explore(node, c, r, L, angle):                                        # Explore neighbors
+            if str(next_node) in visited:                                                            # Check if action performed next node is already visited
+                cost_temp = cost + distance[str(node.pos)] - cal_dis(tuple(node.pos[:2]), tuple(goal_node[:2]))
+                if cost_temp < distance[str(next_node)]:                                             # Update cost
+                    distance[str(next_node)] = cost_temp
+                    node_objects[str(next_node)].parent = node
+                    
+            else:                                                                                    # If next node is not visited
+                visited.add(str(next_node))
+                absolute_cost = cost + distance[str(node.pos)] + cal_dis(tuple(next_node[:2]), tuple(goal_node[:2])) - cal_dis(tuple(node.pos[:2]), tuple(goal_node[:2]))
+                distance[str(next_node)] = absolute_cost
+                new_node = Node.Node(next_node, absolute_cost, node_objects[str(node.pos)])
+                node_objects[str(next_node)] = new_node
+                q.put((absolute_cost, new_node.pos))
+  
+    return node_objects
