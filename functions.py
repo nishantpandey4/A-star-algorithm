@@ -572,3 +572,33 @@ def algorithm(start_node, goal_node, map, c, r, L, angle):
                 q.put((absolute_cost, new_node.pos))
   
     return node_objects
+def backtracking(node_objects, goal_node):
+    """
+    Backtracks and finds the path from initial to goal node.
+
+    Parameters
+    ----------
+    node_objects : dict
+        All the explored nodes.
+    goal_node : Array
+        User defined goal node.
+
+    Returns
+    -------
+    node_objects : dict
+        All the explored nodes.
+    path : list
+        Path from initial to goal node.
+
+    """
+    rev_path = []                                                                    # Empty reversed path list 
+    goal = node_objects[str(goal_node)]                                              # Get the goal from dictionary
+    rev_path.append(goal_node)                                                       # Add the goal to reversed path list 
+    parent_node = goal.parent                                                        # Get parent of goal node
+    while parent_node:                              
+        rev_path.append(parent_node.pos)                                             # Add coordinates of parent node
+        parent_node = parent_node.parent                                             # Update parent
+    
+    path = list(reversed(rev_path))                                                  # Forward path
+
+    return node_objects, path
