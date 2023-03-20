@@ -144,3 +144,68 @@ def create_map(c,r):
                 map_[j][i] = 1    
     
     return map_
+def s_node(c,r):
+    # """
+    # Gets the start node from the user.
+
+    # Returns
+    # -------
+    # start_node : Array
+    #     Coordinates of start node.
+
+    # """
+    
+    flag = False
+    while not flag:
+        start_node = [int(item) for item in input("\n Please enter the start node: ").split(',')]
+        start_node[1] = 250 - start_node[1]
+
+        if (start_node[2] > 360):
+            start_node[2] = start_node[2] % 360
+
+        # check 1 - range of map
+        if (len(start_node) == 3 and (0 <= start_node[0] <= 600) and (0 <= start_node[1] <= 250)):
+        # check 2 - obstacle collision?
+            if not isObstacle(start_node,c,r):
+                flag = True
+            else:   
+                print("Start node collides with obstacle \n")
+        else:
+            print("The input node location does not exist in the map, please enter a valid start node.\n")
+            flag = False
+      
+    return start_node
+
+
+def g_node(c,r):
+    """
+    Gets the goal node from the user.
+
+    Returns
+    -------
+    goal_node : Array
+        Coordinates of goal node.
+
+    """
+    
+    flag = False
+    while not flag:
+        goal_node = [int(item) for item in input("\n Please enter the goal node: ").split(',')]
+        goal_node[1] = 250 - goal_node[1]
+        
+        # check 1 - angle out of range?  
+        if (goal_node[2] > 360):
+            goal_node[2] = goal_node[2] % 360
+
+        # check 1 - range of map       
+        if (len(goal_node) == 3 and (0 <= goal_node[0] <= 600) and (0 <= goal_node[1] <= 250)):
+        # check 2 - obstacle collision?
+            if not isObstacle(goal_node,c,r):
+                flag = True
+            else:
+                print("Goal node collides with obstacle \n")
+        else:
+            print("The input node location does not exist in the map, please enter a valid goal node.\n")
+            flag = False
+        
+    return goal_node
