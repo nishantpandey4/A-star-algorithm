@@ -602,3 +602,84 @@ def backtracking(node_objects, goal_node):
     path = list(reversed(rev_path))                                                  # Forward path
 
     return node_objects, path
+
+def make_video(node_objects, path, map):
+    """
+    Animates the search scenario and exports the animation.
+
+    Parameters
+    ----------
+    node_objects : dict
+        All the explored nodes.
+    path : list
+        Path from initial to goal node.
+    map : 2D Array
+        Contructed map.
+
+    Returns
+    -------
+    None.
+
+    """
+    
+    print(" Creating animation video...")
+    
+    width = 600
+    height = 250
+    FPS = 240                                                                       
+    fourcc = VideoWriter_fourcc(*'mp4v')
+    video = VideoWriter('./Astar_algo.mp4', fourcc, float(FPS), (width, height))
+    
+    
+    nodes = node_objects.values()                                                    # Get the values from dictionary(objects of class Node)
+    nodes = list(nodes)
+    img = np.dstack([map.copy() * 0, map.copy() * 0, map.copy() * 255])              # Convert binary map image to RGB
+    img = np.uint8(img)
+    video.write(img)
+    
+    
+    for i in range(len(nodes)):                                                      # Add visited nodes to video frame
+        img[nodes[i].pos[1], nodes[i].pos[0], :] = np.array([0,255,0])
+        video.write(img)
+        
+    for i in range(len(path) - 1):                                                   # Add generated path to video frame 
+        img[path[i][1], path[i][0], :] = np.array([255,0,0])
+        video.write(img)
+    
+    video.release()
+    print(" Animation video saved.")
+ 
+    
+def user_guide():
+    """
+    Provides solver description and running instructions to the user.
+
+    Returns
+    -------
+    None.
+
+    """
+    
+    print("""
+           
+    --------------------------------------------------------------------------------------------------------------------
+         
+    THIS PROGRAM USES A* ALGORITHM FOR SEARCHING A PATH FROM USER DEFINED START AND GOAL LOCATION IN A GIVEN MAP.
+    
+    --------------------------------------------------------------------------------------------------------------------
+    
+    -> The user needs to enter the data for clearance, robot radius, step-size(stride) and angle step-size.
+
+    -> Angle values should be betweeen 0-360 degrees
+
+    -> Step size should be between 1-10
+    
+    -> Then, the user provides the coordinates of the start and goal node according to the format given below:
+    
+        Example: For a node with x and y-coordinates as 100 and 200 and orientation as 0, 
+            
+        Input: 100,200,0
+    
+    (Note: Only comma seperated values are allowed)
+   --------------------------------------------------------------------------------------------------------------------
+    """)
